@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\Admin\AdminArticlesController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminTagsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,17 +18,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('articles.index');
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('articles', [ArticlesController::class, 'index'])->name('articles.index');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('tags', AdminTagsController::class);
+    Route::resource('articles', AdminArticlesController::class);
 });
 
 require __DIR__.'/auth.php';
