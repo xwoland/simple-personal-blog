@@ -10,7 +10,7 @@
                     <div class="mb-4">
                         <x-link :href="route('admin.articles.create')">Create</x-link>
                     </div>
-                    <table class="w-full text-left border-collaps">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr>
                                 <th class="px-6 py-4 text-sm font-bold uppercase bg-gray-100 border-b text-gray-dark border-gray-light">#</th>
@@ -20,16 +20,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 border-b border-gray-200">1</td>
-                                <td class="px-6 py-4 border-b border-gray-200">Kniga</td>
-                                <td class="px-6 py-4 border-b border-gray-200">Novaya</td>
-                                <td class="px-6 py-4 border-b border-gray-200">
-                                    <x-link>Edit</x-link>
-                                </td>
-                            </tr>
+                            @foreach ($articles as $article)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 border-b border-gray-200">{{ $article->id }}</td>
+                                    <td class="px-6 py-4 border-b border-gray-200">{{ $article->title }}</td>
+                                    <td class="px-6 py-4 border-b border-gray-200">{{ $article->category->name }}</td>
+                                    <td class="px-6 py-4 border-b border-gray-200">
+                                        <x-link :href="(route('admin.articles.edit', $article->id))">Edit</x-link>
+                                        <form method="POST" action="{{ route('admin.articles.destroy', $article->id) }}"
+                                            onsubmit="return confirm('Are you sure?');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <x-primary-button>Delete</x-primary-button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
+                    {{ $articles->links() }}
                 </div>
             </div>
         </div>
